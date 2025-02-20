@@ -2,7 +2,7 @@
 import { GoogleAuthProvider, onAuthStateChanged, signInWithPopup, signOut, updateProfile } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { auth } from "../firebase/firebase.config";
-import { axiosPublic } from "../utilities/utilities";
+import { axiosAll } from "../utilities/utilities";
 import { AuthContext } from "../AuthContext";
 
 
