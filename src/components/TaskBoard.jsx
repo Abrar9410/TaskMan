@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
+import NewTaskModal from './NewTaskModal';
+import { axiosAll } from '../utilities/utilities';
 
 const categories = ['To-Do', 'In Progress', 'Done'];
 
 const TaskBoard = () => {
     const [tasks, setTasks] = useState([
-        { id: '1', title: 'Task 1', category: 'To-Do', order: 0 },
+        { id: '1', title: 'Task 1', description: 'korte hobr jevabei hok', category: 'To-Do', order: 0 },
         { id: '2', title: 'Task 2', category: 'In Progress', order: 0 },
         { id: '3', title: 'Task 3', category: 'Done', order: 0 },
     ]);
@@ -37,11 +39,10 @@ const TaskBoard = () => {
 
         // 3. API Call to Save Order in Background
         // try {
-        //     await fetch('http://localhost:5000/tasks/update-order', {
-        //         method: 'PUT',
-        //         headers: { 'Content-Type': 'application/json' },
-        //         body: JSON.stringify({ tasks: categoryTasks }),
-        //     });
+        //     const {data} = await axiosAll.put('/tasks/update-order', { tasks: categoryTasks });
+        //     if (data.modifiedCount>0) {
+        //         console.log('database updated');
+        //     };
         // } catch (error) {
         //     // 4. Revert UI if API call fails
         //     console.error('Failed to update order:', error);
@@ -50,41 +51,54 @@ const TaskBoard = () => {
     };
 
     return (
-        <DragDropContext onDragEnd={onDragEnd}>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 my-16">
-                {categories.map((category, index) => (
-                    <Droppable key={category} droppableId={String(index)}>
-                        {(provided) => (
-                            <div
-                                {...provided.droppableProps}
-                                ref={provided.innerRef}
-                                className={`${category === 'To-Do' && 'bg-red-500'} ${category === 'In Progress' && 'bg-yellow-500'} ${category === 'Done' && 'bg-green-500'} rounded-lg p-4 min-h-[200px]`}
-                            >
-                                <h2 className="text-lg font-bold mb-2">{category}</h2>
-                                {tasks
-                                    .filter((task) => task.category === category)
-                                    .sort((a, b) => a.order - b.order) // Sort tasks by order
-                                    .map((task, index) => (
-                                        <Draggable key={task.id} draggableId={task.id} index={index}>
-                                            {(provided) => (
-                                                <div
-                                                    ref={provided.innerRef}
-                                                    {...provided.draggableProps}
-                                                    {...provided.dragHandleProps}
-                                                    className="bg-white rounded-lg shadow p-3 mb-2 cursor-grab"
-                                                >
-                                                    {task.title}
-                                                </div>
-                                            )}
-                                        </Draggable>
-                                    ))}
-                                {provided.placeholder}
-                            </div>
-                        )}
-                    </Droppable>
-                ))}
+        <>
+            <div className="my-16 flex justify-center">
+                <button onClick={()=>document.getElementById('add-task').showModal()} className='w-max px-2 pb-1 bg-orange-500 text-white rounded-md shadow-md cursor-pointer outline-none'>
+                    <span className='text-2xl font-semibold'>+</span>
+                    <span className='text-lg font-semibold'> Add New Task</span>
+                </button>
             </div>
-        </DragDropContext>
+            <DragDropContext onDragEnd={onDragEnd}>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 my-16">
+                    {categories.map((category, index) => (
+                        <Droppable key={category} droppableId={String(index)}>
+                            {(provided) => (
+                                <div
+                                    {...provided.droppableProps}
+                                    ref={provided.innerRef}
+                                    className={`${category === 'To-Do' && 'bg-red-500'} ${category === 'In Progress' && 'bg-yellow-500'} ${category === 'Done' && 'bg-green-500'} rounded-lg p-4 min-h-[200px]`}
+                                >
+                                    <h2 className="text-lg font-bold text-center mb-2">{category}</h2>
+                                    {tasks
+                                        .filter((task) => task.category === category)
+                                        .sort((a, b) => a.order - b.order) // Sort tasks by order
+                                        .map((task, index) => (
+                                            <div key={task.id} className="flex gap-2">
+                                                <p className='w-max text-lg text-black font-bold pt-3'>{index + 1}.</p>
+                                                <Draggable draggableId={task.id} index={index}>
+                                                    {(provided) => (
+                                                        <div
+                                                            ref={provided.innerRef}
+                                                            {...provided.draggableProps}
+                                                            {...provided.dragHandleProps}
+                                                            className="bg-white text-black w-full rounded-lg shadow p-3 mb-2 cursor-grab"
+                                                        >
+                                                            <h3 className='text-lg font-bold'>{task.title}</h3>
+                                                            <p>{task.description || ''}</p>
+                                                        </div>
+                                                    )}
+                                                </Draggable>
+                                            </div>
+                                        ))}
+                                    {provided.placeholder}
+                                </div>
+                            )}
+                        </Droppable>
+                    ))}
+                </div>
+            </DragDropContext>
+            <NewTaskModal></NewTaskModal>
+        </>
     );
 };
 
