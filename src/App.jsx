@@ -1,10 +1,17 @@
+import { useContext } from "react"
+import GoogleLogin from "./components/GoogleLogin"
+import Navbar from "./components/Navbar"
+import { AuthContext } from "./AuthContext"
 
 
 function App() {
 
+  const {user, loading} = useContext(AuthContext);
+
   return (
     <>
-      <h1 className='text-6xl'>TASK MANAGER</h1>
+      <Navbar></Navbar>
+      <GoogleLogin></GoogleLogin>
     </>
   )
 }
