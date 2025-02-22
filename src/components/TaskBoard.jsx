@@ -5,6 +5,8 @@ import { axiosAll } from '../utilities/utilities';
 import { AuthContext } from '../AuthContext';
 import { MdDelete } from 'react-icons/md';
 import { CiEdit } from 'react-icons/ci';
+import Swal from 'sweetalert2';
+import EditTaskModal from './EditTaskModal';
 
 const categories = ['To-Do', 'In Progress', 'Done'];
 
@@ -61,22 +63,22 @@ const TaskBoard = () => {
         }
     };
 
-    // const handleEdit = async id => {
-
-    // }
+    const handleEdit = async id => {
+        document.getElementById(`${id}`).showModal();
+    }
 
     const handleDelete = id => {
         Swal.fire({
-            title: "Are you sure you want to log out?",
+            title: "Are you sure you want to delete this task?",
             icon: "warning",
             showCancelButton: true,
             confirmButtonColor: "#d33",
             cancelButtonColor: "#3085d6",
-            confirmButtonText: "Yes, log out!"
+            confirmButtonText: "Yes, Delete!"
         }).then(async (result) => {
             if (result.isConfirmed) {
-                const {data} = await axiosAll.delete(`/tasks/${id}`);
-                if (data.deletedCount>0) {
+                const { data } = await axiosAll.delete(`/tasks/${id}`);
+                if (data.deletedCount > 0) {
                     getAllTasks(user.email);
                 }
             }
@@ -116,17 +118,17 @@ const TaskBoard = () => {
                                                             {...provided.dragHandleProps}
                                                             className="bg-white text-black w-full rounded-lg shadow p-3 mb-2 cursor-grab flex justify-between items-center"
                                                         >
-                                                            <div className="w-full">
-                                                                <h3 className='text-lg font-bold'>{task.title}</h3>
-                                                                <p>{task.description || ''}</p>
-                                                            </div>
-                                                            <div className="flex flex-col items-center w-max gap-2">
-                                                                <CiEdit onClick={() => handleEdit(task._id)} className='text-blue-500' />
-                                                                <MdDelete onClick={() => handleDelete(task._id)} className='text-red-500' />
-                                                            </div>
+                                                            <h3 className='text-lg font-bold'>{task.title}</h3>
+                                                            <p>{task.description || ''}</p>
+
                                                         </div>
                                                     )}
                                                 </Draggable>
+                                                <div className="bg-white flex flex-col items-center w-max h-max gap-2 mt-2">
+                                                    <CiEdit onClick={() => handleEdit(task._id)} className='text-blue-500 cursor-pointer hover:scale-125' />
+                                                    <MdDelete onClick={() => handleDelete(task._id)} className='text-red-500 cursor-pointer hover:scale-125' />
+                                                </div>
+                                                <EditTaskModal task={task} userEmail={user.email} getAllTasks={getAllTasks}></EditTaskModal>
                                             </div>
                                         ))}
                                     {provided.placeholder}

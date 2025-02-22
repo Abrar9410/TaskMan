@@ -3,7 +3,7 @@
 ## 📝 Short Description
 A web-based task management application built with the MERN stack and Firebase Authentication. Users can organize tasks into categories (To-Do, In Progress, Done) with drag-and-drop functionality and real-time updates.
 
-## 🌐 Live Links
+## 🌐 Live Link
 - **Live Demo:** [Click here](https://task-man-manage-tasks.netlify.app/)
 
 ## 🧩 Dependencies
